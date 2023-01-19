@@ -1,5 +1,9 @@
+import VTCPClient
+
 def main():
-    print("Hello world\n")
+    pass
+#should be gui instance
 
 
-main()
+if __name__ == '__main__':
+    main()
