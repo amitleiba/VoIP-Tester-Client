@@ -1,7 +1,7 @@
 from enum import Enum
 
-class VTCPOpcodes(Enum):
-    ON_VTCP_CONNECT_REQUEST = 1
-    ON_VTCP_DISCONNECT_REQUEST = 2
-    ON_VTCP_TEST_REQUEST = 3
-    ON_VTCP_SSP_REQUEST = 4
+class VTCPOpcode(Enum):
+    VTCP_CONNECT = 1
+    VTCP_DISCONNECT = 2
+    VTCP_AUTO_TEST = 3
+    VTCP_MANUAL_TEST = 4

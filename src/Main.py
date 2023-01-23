@@ -1,8 +1,8 @@
-import VTCPClient
+from GUI import GUI
 
 def main():
-    pass
-#should be gui instance
+    gui = GUI()
+    gui.runGui()
 
 
 if __name__ == '__main__':
