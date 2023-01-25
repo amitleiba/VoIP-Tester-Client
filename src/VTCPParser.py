@@ -6,7 +6,7 @@ class Parser:
         self.OPCODE_LENGTH = 4
 
     def serialize(self, opcode : VTCPOpcode, data : str):
-        serialized_message = str(len(data)).zfill(self.HEADER_LENGTH) + str(opcode).zfill(self.OPCODE_LENGTH) + data
+        serialized_message = str(len(data) + self.OPCODE_LENGTH).zfill(self.HEADER_LENGTH) + str(opcode.value).zfill(self.OPCODE_LENGTH) + data
         return serialized_message
 
     def deserialize(self, serialized_message : str):

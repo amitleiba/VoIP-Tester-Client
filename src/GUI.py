@@ -27,12 +27,12 @@ class GUI:
             return
         
         print(f"onConnectButtonClicked {domain} , {port}")
-        try:
-            self.client.connect(domain, port)
-            self.is_connected = True
-            self.client.send(VTCPOpcode.VTCP_CONNECT, "")
-        except:
-            self.is_connected = False
+        # try:
+        self.client.connect(domain, int(port))
+        self.is_connected = True
+        self.client.send(VTCPOpcode.VTCP_CONNECT, "")
+        # except:
+        #     self.is_connected = False
 
     def onDisconnectButtonClicked(self):
         if(not self.is_connected):
