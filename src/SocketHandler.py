@@ -13,6 +13,7 @@ class SocketHandler:
     def disconnect(self):
         self._socket.close()
     
-    def send(self, serilized_message: str):
+    def send(self, serilized_message):
         if self._socket is not None:
-            self._socket.send(serilized_message.encode())
+            print(serilized_message)
+            self._socket.send(serilized_message)

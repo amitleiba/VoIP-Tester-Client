@@ -1,5 +1,6 @@
 from VTCPOpcode import VTCPOpcode
 from VTCPClient import Client
+from Message import Message
 from Page import Ui_MainWindow
 from PyQt5 import QtWidgets
 import sys
@@ -22,15 +23,17 @@ class GUI:
         self.initButtons()
         sys.exit(self.app.exec_())
         
-    def onConnectButtonClicked(self, domain : str, port :str):
+    def onConnectButtonClicked(self, domain : str):
         if(self.is_connected):
             return
         
-        print(f"onConnectButtonClicked {domain} , {port}")
+        print(f"onConnectButtonClicked {domain}")
         # try:
-        self.client.connect(domain, int(port))
+        self.client.connect(domain)
         self.is_connected = True
-        self.client.send(VTCPOpcode.VTCP_CONNECT, "")
+        message = Message()
+        message.push_integer(VTCPOpcode.VTCP_CONNECT_REQ.value)
+        self.client.send(message)
         # except:
         #     self.is_connected = False
 
@@ -39,19 +42,29 @@ class GUI:
             return
 
         print("onDisconnectButtonClicked")
-        self.client.send(VTCPOpcode.VTCP_DISCONNECT, "")
+
+        message = Message()
+        message.push_integer(VTCPOpcode.VTCP_DISCONNECT_REQ.value)
+        self.client.send(message)
         self.client.disconnect()
 
-    def onManualTestButtonClicked(self, data: str):
-        print(f"onManualTestButtonClicked {data}")
+    def onManualTestButtonClicked(self, pbx_ip: str):
+        print(f"onManualTestButtonClicked {pbx_ip}")
         if(not self.is_connected):
             return
 
-        self.client.send(VTCPOpcode.VTCP_MANUAL_TEST, data)
+        message = Message()
+        message.push_integer(VTCPOpcode.VTCP_MANUAL_TEST_REQ.value)
+        message.push_string(pbx_ip)
+        self.client.send(message)
 
-    def onAutoTestButtonClicked(self, data: str):
-        print(f"onAutoTestButtonClicked {data}")
+    def onAutoTestButtonClicked(self, pbx_ip: str, amount :str):
+        print(f"onAutoTestButtonClicked {pbx_ip}, {amount}")
         if(not self.is_connected):
             return
 
-        self.client.send(VTCPOpcode.VTCP_AUTO_TEST, data)
+        message = Message()
+        message.push_integer(VTCPOpcode.VTCP_AUTO_TEST_REQ.value)
+        message.push_string(pbx_ip)
+        message.push_integer(int(amount))
+        self.client.send(message)
