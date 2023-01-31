@@ -208,11 +208,14 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.connect_frame_ip_edit_text.setGeometry(QtCore.QRect(30, 270, 181, 31))
         self.connect_frame_ip_edit_text.setObjectName("connect_frame_ip_edit_text")
         self.connect_frame_text_label = QtWidgets.QLabel(self.connect_frame)
-        self.connect_frame_text_label.setGeometry(QtCore.QRect(10, 90, 221, 101))
+        self.connect_frame_text_label.setGeometry(QtCore.QRect(20, 90, 221, 101))
         self.connect_frame_text_label.setObjectName("connect_frame_text_label")
         self.connect_frame_ip_label = QtWidgets.QLabel(self.connect_frame)
         self.connect_frame_ip_label.setGeometry(QtCore.QRect(30, 250, 47, 13))
         self.connect_frame_ip_label.setObjectName("connect_frame_ip_label")
+        self.connect_frame_disconnect_button = QtWidgets.QPushButton(self.connect_frame)
+        self.connect_frame_disconnect_button.setGeometry(QtCore.QRect(150, 560, 93, 28))
+        self.connect_frame_disconnect_button.setObjectName("connect_frame_disconnect_button")
         self.setCentralWidget(self.centralwidget)
 
         self.retranslateUi()
@@ -222,6 +225,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.auto_tests_button.clicked.connect(self.autoTestClicked)
         self.manual_tests_register_button.clicked.connect(self.manualTestClicked)
         self.connect_frame_Connect_button.clicked.connect(self.connectClicked)
+        self.connect_frame_disconnect_button.clicked.connect(self.disconnectClicked)
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
@@ -273,6 +277,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.connect_frame_Connect_button.setText(_translate("MainWindow", "Connect"))
         self.connect_frame_text_label.setText(_translate("MainWindow", "<html><head/><body><p align=\"justify\"><span style=\" font-size:10pt; font-weight:600;\">Please enter IP and</span></p><p align=\"justify\"><span style=\" font-size:10pt; font-weight:600;\">the port of the server</span></p><p align=\"justify\"><span style=\" font-size:10pt; font-weight:600;\">inorder to use the tester</span></p></body></html>"))
         self.connect_frame_ip_label.setText(_translate("MainWindow", "IP:"))
+        self.connect_frame_disconnect_button.setText(_translate("MainWindow", "Disconnect"))
 
     def autoTestClicked(self):
         self.auto_test_signal.emit(self.auto_tests_pbx_ip_edit_text.toPlainText(), self.auto_tests_amout_edit_text.toPlainText())

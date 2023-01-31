@@ -17,6 +17,7 @@ class Client:
         self.start_listening()
 
     def disconnect(self):
+        self.is_connected = False
         self.socket_handler.disconnect()
 
     def send(self, message: Message):
@@ -30,4 +31,5 @@ class Client:
     def listen(self):
         while(self.is_connected):
             message = self.socket_handler.receive()
-            self.result_handler.handle(message)
+            if message != None:
+                self.result_handler.handle(message)
