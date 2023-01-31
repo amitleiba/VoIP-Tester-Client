@@ -43,7 +43,6 @@ class Message:
     def get_index(self):
         return self._index
 
-
     def push_size(self):
         size = len(self._payload)
         self._payload[:] = size.to_bytes(4, byteorder='little') + self._payload

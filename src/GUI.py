@@ -47,6 +47,7 @@ class GUI:
         message.push_integer(VTCPOpcode.VTCP_DISCONNECT_REQ.value)
         self.client.send(message)
         self.client.disconnect()
+        self.is_connected = False
 
     def onManualTestButtonClicked(self, pbx_ip: str):
         print(f"onManualTestButtonClicked {pbx_ip}")
