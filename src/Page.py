@@ -1,5 +1,4 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-import sys
 
 class Ui_MainWindow(QtWidgets.QMainWindow):
 
@@ -7,6 +6,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
     manual_test_signal = QtCore.pyqtSignal(str)
     connect_signal = QtCore.pyqtSignal(str)
     disconnect_signal = QtCore.pyqtSignal()
+    print_log = QtCore.pyqtSignal(QtWidgets.QTextBrowser, str)
 
     def __init__(self):
         super(Ui_MainWindow, self).__init__()
@@ -180,6 +180,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.softphone_current_status_label_3.setText("")
         self.softphone_current_status_label_3.setObjectName("softphone_current_status_label_3")
         self.tabWidget.addTab(self.Manual_Tests, "")
+        self.History = QtWidgets.QWidget()
+        self.History.setObjectName("History")
+        self.tabWidget.addTab(self.History, "")
         self.Settings = QtWidgets.QWidget()
         self.Settings.setObjectName("Settings")
         self.tabWidget.addTab(self.Settings, "")
@@ -271,6 +274,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.softphone_request_label_3.setText(_translate("MainWindow", "Enter the id of the sofphone you want to call:"))
         self.softphone_status_label_3.setText(_translate("MainWindow", "Status:"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.Manual_Tests), _translate("MainWindow", "Manual Tests"))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.History), _translate("MainWindow", "History"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.Settings), _translate("MainWindow", "Settings"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.About), _translate("MainWindow", "About"))
         self.VoIP_Tester_Label.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:28pt;\">VoIP</span></p><p align=\"center\"><span style=\" font-size:28pt;\">Tester</span></p><p align=\"center\"><span style=\" font-size:28pt;\">Controller</span></p></body></html>"))
@@ -290,3 +294,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
     
     def disconnectClicked(self):
         self.disconnect_signal.emit()
+
+    def printLog(self, text_browser : QtWidgets.QTextBrowser, value : str):
+        text_browser.setText(text_browser.toPlainText() + value)

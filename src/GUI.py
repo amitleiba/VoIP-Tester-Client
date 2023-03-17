@@ -8,7 +8,7 @@ import sys
 class GUI:
     def __init__(self):
         self.is_connected = False
-        self.client = Client()
+        self.client = Client(self.updateAutoTestLable, self.updateManulTestLabel1, self.updateManulTestLabel2, self.updateManulTestLabel3)
         self.app = QtWidgets.QApplication(sys.argv)
         self.ui = Ui_MainWindow()
         
@@ -17,11 +17,24 @@ class GUI:
         self.ui.manual_test_signal.connect(self.onManualTestButtonClicked)
         self.ui.connect_signal.connect(self.onConnectButtonClicked)
         self.ui.disconnect_signal.connect(self.onDisconnectButtonClicked)
+        self.ui.print_log.connect(self.ui.printLog)
 
     def runGui(self):
         self.ui.show()
         self.initButtons()
         sys.exit(self.app.exec_())
+
+    def updateAutoTestLable(self, text :str):
+        self.ui.print_log.emit(self.ui.auto_tests_log_text_browser, text)
+
+    def updateManulTestLabel1(self, text : str):
+        self.ui.print_log.emit(self.ui.softphone_log_text_browser_1, text)
+
+    def updateManulTestLabel2(self, text : str):
+        self.ui.print_log.emit(self.ui.softphone_log_text_browser_1, text)
+    
+    def updateManulTestLabel3(self, text : str):
+        self.ui.print_log.emit(self.ui.softphone_log_text_browser_1, text)
         
     def onConnectButtonClicked(self, domain : str):
         if(self.is_connected):

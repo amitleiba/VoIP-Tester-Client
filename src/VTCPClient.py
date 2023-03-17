@@ -5,10 +5,10 @@ from Message import Message
 from ResultHandler import ResultHandler
 
 class Client:
-    def __init__(self):
-        self.port = 5060
+    def __init__(self, selfupdateAutoTestLable, updateManulTestLabel1, updateManulTestLabel2, updateManulTestLabel3):
+        self.port = 8080
         self.socket_handler = SocketHandler()
-        self.result_handler = ResultHandler()
+        self.result_handler = ResultHandler(selfupdateAutoTestLable, updateManulTestLabel1, updateManulTestLabel2, updateManulTestLabel3)
         self.is_connected = False
 
     def connect(self, host: str):
@@ -33,3 +33,6 @@ class Client:
             message = self.socket_handler.receive()
             if message != None:
                 self.result_handler.handle(message)
+
+    def isConnected(self):
+        return self.is_connected

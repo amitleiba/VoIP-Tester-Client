@@ -36,4 +36,5 @@ class SocketHandler:
                     print("Session closed gracefully")
                 else:
                     print("Receiver error")
+                    self.disconnect()
                 return None
