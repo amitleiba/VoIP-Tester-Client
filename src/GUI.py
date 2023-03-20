@@ -4,13 +4,15 @@ from Message import Message
 from Page import Ui_MainWindow
 from PyQt5 import QtWidgets
 import sys
+import json
 
 class GUI:
     def __init__(self):
         self.is_connected = False
         self.client = Client(self.updateAutoTestLable, self.updateManulTestLabel1, self.updateManulTestLabel2, self.updateManulTestLabel3)
         self.app = QtWidgets.QApplication(sys.argv)
-        self.ui = Ui_MainWindow()
+        self.ui = Ui_MainWindow(self.filterAutoTestLable)
+        self.AutoTestText = ''
         
     def initButtons(self):
         self.ui.auto_test_signal.connect(self.onAutoTestButtonClicked)
@@ -25,6 +27,7 @@ class GUI:
         sys.exit(self.app.exec_())
 
     def updateAutoTestLable(self, text :str):
+        self.AutoTestText = text
         self.ui.print_log.emit(self.ui.auto_tests_log_text_browser, text)
 
     def updateManulTestLabel1(self, text : str):
@@ -35,6 +38,32 @@ class GUI:
     
     def updateManulTestLabel3(self, text : str):
         self.ui.print_log.emit(self.ui.softphone_log_text_browser_1, text)
+
+    def filterAutoTestLable(self, item_text):
+        if item_text == 'ALL':
+            self.updateAutoTestLable(self.AutoTestText)
+        else:
+            json_list = json.loads(self.AutoTestText)
+            filtered_list = []
+            for json_item in json_list['data']:
+                if json_item['type'] in self.ui.comboBox.selected_items:
+                    filtered_list.append(json_item)
+            json_list['data'] = filtered_list
+            json_text = self.format_json(json.dumps(json_list))
+            self.ui.print_log.emit(self.ui.auto_tests_log_text_browser, json_text)
+    
+    def format_json(self, data : str):
+        formatted_str = data.replace(" {", "{")
+        formatted_str = formatted_str.replace(",", ",\n")
+        formatted_str = formatted_str.replace("{", "{\n")
+        formatted_str = formatted_str.replace("}", "\n}")
+        formatted_str = formatted_str.replace("[{", "[\n{")
+        formatted_str = formatted_str.replace("} ]", "}\n]")
+        formatted_str = formatted_str.replace("\"type\"", "   \"type\"")
+        formatted_str = formatted_str.replace("\"description-time\"", "   \"description time\"")
+        formatted_str = formatted_str.replace("\"description\"", "   \"description\"")
+        formatted_str = formatted_str.replace("data : ", "data:\n")
+        return formatted_str
         
     def onConnectButtonClicked(self, domain : str):
         if(self.is_connected):

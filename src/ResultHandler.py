@@ -20,7 +20,9 @@ class ResultHandler:
 
     def onVtcpConnectResult(self, data : Message):
         print("The server returned result for the Connection")
-        return self.format_json(data.read_string())
+        
+
+        
 
     def onVtcpDisconnectResult(self, data : Message):
         print("The server returned result for the Disconnection")
