@@ -5,10 +5,16 @@ from Message import Message
 from ResultHandler import ResultHandler
 
 class Client:
-    def __init__(self, selfupdateAutoTestLable, updateManulTestLabel1, updateManulTestLabel2, updateManulTestLabel3):
+    def __init__(self, selfupdateAutoTestLable,
+                updateManulTestLabel1, updateManulTestLabel2,
+                updateManulTestLabel3, onVtcpHistoryHeaderResult,
+                onVtcpHistoryLogResult):
         self.port = 8080
         self.socket_handler = SocketHandler()
-        self.result_handler = ResultHandler(selfupdateAutoTestLable, updateManulTestLabel1, updateManulTestLabel2, updateManulTestLabel3)
+        self.result_handler = ResultHandler(selfupdateAutoTestLable,
+                                            updateManulTestLabel1, updateManulTestLabel2,
+                                            updateManulTestLabel3, onVtcpHistoryHeaderResult,
+                                            onVtcpHistoryLogResult, self.send)
         self.is_connected = False
 
     def connect(self, host: str):

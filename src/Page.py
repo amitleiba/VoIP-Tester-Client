@@ -1,5 +1,7 @@
 from PyQt5 import QtCore, QtWidgets
 from CheckableComboBox import CheckableComboBox
+from PopupWindow import PopupWindow
+from PyQt5.QtWidgets import *
 
 class Ui_MainWindow(QtWidgets.QMainWindow):
 
@@ -8,6 +10,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
     connect_signal = QtCore.pyqtSignal(str)
     disconnect_signal = QtCore.pyqtSignal()
     print_log = QtCore.pyqtSignal(QtWidgets.QTextBrowser, str)
+    item_clicked_signal = QtCore.pyqtSignal(str)
+    openPopupWindow_signal = QtCore.pyqtSignal(str)
 
     def __init__(self, filterAutoTestLabel):
         super(Ui_MainWindow, self).__init__()
@@ -237,6 +241,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.softphone_register_button_3.clicked.connect(self.manualTestClicked)
         self.connect_frame_Connect_button.clicked.connect(self.connectClicked)
         self.connect_frame_disconnect_button.clicked.connect(self.disconnectClicked)
+        self.Log_History_List_Widget.itemClicked.connect(self.itemClicked)
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
@@ -302,3 +307,11 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
     def printLog(self, text_browser : QtWidgets.QTextBrowser, value : str):
         text_browser.setText(value)
+
+    def itemClicked(self, item):
+        self.item_clicked_signal.emit(item.text())
+    
+    def openPopupWindow(self, data):
+        popup_window = PopupWindow(data)
+        popup_window.exec_()
+
