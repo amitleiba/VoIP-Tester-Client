@@ -46,6 +46,8 @@ class GUI:
         self.ui.print_log.emit(self.ui.softphone_log_text_browser_1, text)
 
     def filterAutoTestLable(self, item_text):
+        if self.AutoTestText == '':
+            return
         if item_text == 'ALL':
             self.updateAutoTestLable(self.AutoTestText)
         else:
@@ -99,14 +101,15 @@ class GUI:
             return
         
         print(f"onConnectButtonClicked {domain}")
-        # try:
-        self.client.connect(domain)
-        self.is_connected = True
-        message = Message()
-        message.push_integer(VTCPOpcode.VTCP_CONNECT_REQ.value)
-        self.client.send(message)
-        # except:
-        #     self.is_connected = False
+        try:
+            self.client.connect(domain)
+            self.is_connected = True
+            message = Message()
+            message.push_integer(VTCPOpcode.VTCP_CONNECT_REQ.value)
+            self.client.send(message)
+        except:
+            self.is_connected = False
+            print('Connection error')
 
     def onDisconnectButtonClicked(self):
         if(not self.is_connected):
