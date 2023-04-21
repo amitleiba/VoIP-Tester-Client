@@ -1,4 +1,5 @@
 from VTCPOpcode import VTCPOpcode
+from ManualTestOpcode import ManualTestOpcode
 from VTCPClient import Client
 from Message import Message
 from Page import Ui_MainWindow
@@ -19,17 +20,22 @@ class GUI:
         
     def initButtons(self):
         self.ui.auto_test_signal.connect(self.onAutoTestButtonClicked)
-        self.ui.manual_test_signal.connect(self.onManualTestButtonClicked)
+        self.ui.manual_test_register_signal.connect(self.onManualTestRegisterButtonClicked)
+        self.ui.manual_test_unregister_signal.connect(self.onManualTestUnregisterButtonClicked)
+        self.ui.manual_test_call_signal.connect(self.onManualTestCallButtonClicked)
+        self.ui.manual_test_hangup_signal.connect(self.onManualTestHangupButtonClicked)
+        self.ui.manual_test_answer_signal.connect(self.onManualTestAnswerButtonClicked)
+        self.ui.manual_test_decline_signal.connect(self.onManualTestDeclineButtonClicked)
         self.ui.connect_signal.connect(self.onConnectButtonClicked)
         self.ui.disconnect_signal.connect(self.onDisconnectButtonClicked)
         self.ui.print_log.connect(self.ui.printLog)
         self.ui.item_clicked_signal.connect(self.onItemClickedInHistoryList)
         self.ui.openPopupWindow_signal.connect(self.ui.openPopupWindow)
+        self.ui.refreshHeaders_signal.connect(self.onRefreshHeadersButtonClicked)
 
     def runGui(self):
         self.ui.show()
         self.initButtons()
-        # self.onVtcpHistoryHeaderResult("")
         sys.exit(self.app.exec_())
 
     def updateAutoTestLable(self, text :str):
@@ -74,13 +80,10 @@ class GUI:
         return formatted_str
     
     def onVtcpHistoryHeaderResult(self, data):
-        # data = '{"creation-time": "2023-02-23 10-31-22", "data": [{"type": "info", "description-time": "10-31-22:492", "description": "SIP REGISTER OK from 9995@127.0.0.1"}]},{"creation-time": "2023-02-23 10-31-22", "data": [{"type": "info", "description-time": "10-31-22:492", "description": "SIP REGISTER OK from 9995@127.0.0.1"}]}'
+        self.ui.Log_History_List_Widget.clear()
         json_list = json.loads(data)
-        for i in range(len(json_list['headers'])):
-            self.ui.Log_History_List_Widget.addItem(self.format_json(json.dumps(json_list['headers'][i])))
-
-                # '_id: ' + json_list['headers'][i]['_id'] +',\ncreation-time: ' + json_list['headers'][i]['creation-time'])
-        # self.ui.Log_History_List_Widget.addItem(data)
+        for i in range(len(json_list['history-headers'])):
+            self.ui.Log_History_List_Widget.addItem(self.format_json(json.dumps(json_list['history-headers'][i])))
 
     def onVtcpHistoryLogResult(self, data):
         formated_data = self.format_json(data)
@@ -96,13 +99,13 @@ class GUI:
         message.push_string(str(json_list['_id']))
         self.client.send(message)
         
-    def onConnectButtonClicked(self, domain : str):
+    def onConnectButtonClicked(self, domain : str, port : str):
         if(self.is_connected):
             return
         
-        print(f"onConnectButtonClicked {domain}")
+        print(f"onConnectButtonClicked {domain}, {port}")
         try:
-            self.client.connect(domain)
+            self.client.connect(domain, int(port))
             self.is_connected = True
             message = Message()
             message.push_integer(VTCPOpcode.VTCP_CONNECT_REQ.value)
@@ -123,14 +126,73 @@ class GUI:
         self.client.disconnect()
         self.is_connected = False
 
-    def onManualTestButtonClicked(self, pbx_ip: str):
-        print(f"onManualTestButtonClicked {pbx_ip}")
+    def onManualTestRegisterButtonClicked(self, softphoneIndex: int, softphoneId: int, pbxIP: str):
+        print(f"onManualTestRegisterButtonClicked {softphoneIndex}, {softphoneId}, {pbxIP}")
         if(not self.is_connected):
             return
 
         message = Message()
         message.push_integer(VTCPOpcode.VTCP_MANUAL_TEST_REQ.value)
-        message.push_string(pbx_ip)
+        message.push_integer(ManualTestOpcode.MANUAL_TEST_REGISTER_REQ.value)
+        message.push_integer(softphoneIndex)
+        message.push_integer(int(softphoneId))
+        message.push_string(pbxIP)
+        self.client.send(message)
+
+    def onManualTestUnregisterButtonClicked(self, softphoneIndex: int):
+        print(f"onManualTestUnregisterButtonClicked {softphoneIndex}")
+        if(not self.is_connected):
+            return
+
+        message = Message()
+        message.push_integer(VTCPOpcode.VTCP_MANUAL_TEST_REQ.value)
+        message.push_integer(ManualTestOpcode.MANUAL_TEST_UNREGISTER_REQ.value)
+        message.push_integer(softphoneIndex)
+        self.client.send(message)
+
+    def onManualTestCallButtonClicked(self, softphoneIndex: int, destUri: str):
+        print(f"onManualTestCallButtonClicked {softphoneIndex}, {destUri}")
+        if(not self.is_connected):
+            return
+
+        message = Message()
+        message.push_integer(VTCPOpcode.VTCP_MANUAL_TEST_REQ.value)
+        message.push_integer(ManualTestOpcode.MANUAL_TEST_CALL_REQ.value)
+        message.push_integer(softphoneIndex)
+        message.push_string(destUri)
+        self.client.send(message)
+
+    def onManualTestHangupButtonClicked(self, softphoneIndex: int):
+        print(f"onManualTestHangupButtonClicked {softphoneIndex}")
+        if(not self.is_connected):
+            return
+
+        message = Message()
+        message.push_integer(VTCPOpcode.VTCP_MANUAL_TEST_REQ.value)
+        message.push_integer(ManualTestOpcode.MANUAL_TEST_HANGUP_REQ.value)
+        message.push_integer(softphoneIndex)
+        self.client.send(message)
+    
+    def onManualTestAnswerButtonClicked(self, softphoneIndex: int):
+        print(f"onManualTestAnswerButtonClicked {softphoneIndex}")
+        if(not self.is_connected):
+            return
+
+        message = Message()
+        message.push_integer(VTCPOpcode.VTCP_MANUAL_TEST_REQ.value)
+        message.push_integer(ManualTestOpcode.MANUAL_TEST_ANSWER_REQ.value)
+        message.push_integer(softphoneIndex)
+        self.client.send(message)
+
+    def onManualTestDeclineButtonClicked(self, softphoneIndex: int):
+        print(f"onManualTestDeclineButtonClicked {softphoneIndex}")
+        if(not self.is_connected):
+            return
+
+        message = Message()
+        message.push_integer(VTCPOpcode.VTCP_MANUAL_TEST_REQ.value)
+        message.push_integer(ManualTestOpcode.MANUAL_TEST_DECLINE_REQ.value)
+        message.push_integer(softphoneIndex)
         self.client.send(message)
 
     def onAutoTestButtonClicked(self, pbx_ip: str, amount :str):
@@ -142,4 +204,9 @@ class GUI:
         message.push_integer(VTCPOpcode.VTCP_AUTO_TEST_REQ.value)
         message.push_string(pbx_ip)
         message.push_integer(int(amount))
+        self.client.send(message)
+
+    def onRefreshHeadersButtonClicked(self):
+        message = Message()
+        message.push_integer(VTCPOpcode.VTCP_HISTORY_HEADER_REQ.value)
         self.client.send(message)

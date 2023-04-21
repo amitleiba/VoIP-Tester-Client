@@ -9,7 +9,7 @@ class Client:
                 updateManulTestLabel1, updateManulTestLabel2,
                 updateManulTestLabel3, onVtcpHistoryHeaderResult,
                 onVtcpHistoryLogResult):
-        self.port = 8080
+        # self.port = 8080
         self.socket_handler = SocketHandler()
         self.result_handler = ResultHandler(selfupdateAutoTestLable,
                                             updateManulTestLabel1, updateManulTestLabel2,
@@ -17,8 +17,8 @@ class Client:
                                             onVtcpHistoryLogResult, self.send)
         self.is_connected = False
 
-    def connect(self, host: str):
-        self.socket_handler.connect(host, self.port)
+    def connect(self, host: str, port : int):
+        self.socket_handler.connect(host, port)
         self.is_connected = True
         self.start_listening()
 

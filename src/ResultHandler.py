@@ -1,14 +1,12 @@
 from VTCPOpcode import VTCPOpcode
 from Message import Message
+from ManualTestHandler import ManualTestHndler
 
 class ResultHandler:
     def __init__(self, selfupdateAutoTestLable, updateManulTestLabel1,
                 updateManulTestLabel2, updateManulTestLabel3,
                 onVtcpHistoryHeaderResult, onVtcpHistoryLogResult, send):
         self._selfupdateAutoTestLable = selfupdateAutoTestLable
-        self._updateManulTestLabel1 = updateManulTestLabel1
-        self._updateManulTestLabel2 = updateManulTestLabel2
-        self._updateManulTestLabel3 = updateManulTestLabel3
         self._send = send
         self._onVtcpHistoryHeaderResult = onVtcpHistoryHeaderResult
         self._onVtcpHistoryLogResult =onVtcpHistoryLogResult
@@ -20,10 +18,12 @@ class ResultHandler:
             VTCPOpcode.VTCP_HISTORY_HEADER_RES: self.onVtcpHistoryHeaderResult,
             VTCPOpcode.VTCP_HISTORY_LOG_RES: self.onVtcpHistoryLogResult
         }
+        self.manualTestHandler = ManualTestHndler(updateManulTestLabel1,
+                                                  updateManulTestLabel2, updateManulTestLabel3)
 
     def handle(self, result :Message):
         opcode = VTCPOpcode(result.read_integer())
-        return self.handler.get(opcode)(result)
+        self.handler.get(opcode)(result)
 
     def onVtcpConnectResult(self, data : Message):
         print("The server returned result for the Connection")
@@ -46,6 +46,7 @@ class ResultHandler:
 
     def onVtcpManualTestResult(self, data : Message):
         print("The server returned result for the Manual Test")
+        self.manualTestHandler.handleManualTest(data)
 
     def format_json(self, data : str):
         formatted_str = data.replace(" {", "{")

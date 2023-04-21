@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QDialog, QTextBrowser, QVBoxLayout, QLabel
 
-class PopupWindow(QDialog):
+class LogPopupWindow(QDialog):
     def __init__(self, data):
         super().__init__()
         self.setWindowTitle('Log Window')
